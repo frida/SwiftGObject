@@ -5,10 +5,16 @@
 //  Created by Rene Hexel on 17/4/17.
 //  Copyright © 2016, 2017, 2018, 2020, 2021, 2023 Rene Hexel.  All rights reserved.
 //
-#if os(macOS) || os(iOS) || os(tvOS)
+#if canImport(Darwin)
 import Darwin
-#else
+#elseif canImport(Glibc)
 import Glibc
+#elseif canImport(Musl)
+import Musl
+#elseif canImport(Android)
+import Android
+#elseif canImport(ucrt)
+import ucrt
 #endif
 import CGLib
 import GLib
@@ -211,12 +217,12 @@ public extension ValueProtocol {
     /// Generic value setter.
     ///
     /// - Parameter value: Int value to set
-    @inlinable func set(_ value: Int) { unset() ; set(type: .long) ; setLong(vLong: glong(value)) }
+    @inlinable func set(_ value: Int) { unset() ; set(type: .long) ; setLong(vLong: numericCast(value)) }
 
     /// Generic value setter.
     ///
     /// - Parameter value: UInt value to set
-    @inlinable func set(_ value: UInt) { unset() ; set(type: .ulong) ; setUlong(vUlong: gulong(value)) }
+    @inlinable func set(_ value: UInt) { unset() ; set(type: .ulong) ; setUlong(vUlong: numericCast(value)) }
 
     /// Generic value setter.
     ///
