@@ -194,8 +194,15 @@ public extension ValueProtocol {
     @inlinable func set(_ s: StaticString) {
         unset()
         set(type: .string)
+        // Call the C function directly to preserve the static-string
+        // optimisation: `g_value_set_static_string` stores the pointer
+        // without copying, and the StaticString's UTF-8 buffer is valid
+        // for the program's lifetime. Going through the Swift wrapper
+        // (which now takes `String`) would bridge through a temporary
+        // C buffer that dies after the call, leaving the GValue holding
+        // a dangling pointer.
         s.utf8Start.withMemoryRebound(to: CChar.self, capacity: s.utf8CodeUnitCount) {
-            setStaticString(vString: $0)
+            g_value_set_static_string(value_ptr, $0)
         }
     }
 

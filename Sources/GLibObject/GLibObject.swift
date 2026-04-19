@@ -127,7 +127,7 @@ public extension ObjectProtocol {
     }
 
     /// Connection helper function for signal handler closure
-    @usableFromInline internal func _connect(signal name: UnsafePointer<gchar>, flags: ConnectFlags, data: SignalHandlerClosureHolder, handler: @convention(c) @escaping (gpointer, gpointer) -> Void) -> Int {
+    @usableFromInline internal func _connect(signal name: String, flags: ConnectFlags, data: SignalHandlerClosureHolder, handler: @convention(c) @escaping (gpointer, gpointer) -> Void) -> Int {
         let holder = UnsafeMutableRawPointer(Unmanaged.passRetained(data).toOpaque())
         let callback = unsafeBitCast(handler, to: Callback.self)
         let rv = signalConnectData(detailedSignal: name, cHandler: callback, data: holder, destroyData: {
@@ -141,7 +141,7 @@ public extension ObjectProtocol {
     }
 
     /// Binding helper function for binding closure
-    @usableFromInline internal func _bind<T: ObjectProtocol>(_ source: UnsafePointer<gchar>, to t: T, _ target_property: UnsafePointer<gchar>, flags f: BindingFlags = .syncCreate, holder: BindingClosureHolder, transformFrom transform_from: @convention(c) @escaping (gpointer, gpointer, gpointer, gpointer) -> gboolean, transformTo transform_to: @convention(c) @escaping (gpointer, gpointer, gpointer, gpointer) -> gboolean) -> BindingRef! {
+    @usableFromInline internal func _bind<T: ObjectProtocol>(_ source: String, to t: T, _ target_property: String, flags f: BindingFlags = .syncCreate, holder: BindingClosureHolder, transformFrom transform_from: @convention(c) @escaping (gpointer, gpointer, gpointer, gpointer) -> gboolean, transformTo transform_to: @convention(c) @escaping (gpointer, gpointer, gpointer, gpointer) -> gboolean) -> BindingRef! {
         let holder = UnsafeMutableRawPointer(Unmanaged.passRetained(holder).toOpaque())
         let from = unsafeBitCast(transform_from, to: BindingTransformFunc.self)
         let to   = unsafeBitCast(transform_to,   to: BindingTransformFunc.self)
